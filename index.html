@@ -1,88 +1,972 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Progate</title>
-  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
-  <link rel="stylesheet" type="text/css" href="stylesheet.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VRCraftStudio - VRChatワールドギミック開発サービス</title>
+    <meta name="description" content="UdonSharp（U#）× Shader開発で、あなたのアイデアを現実に。VRChatワールドギミック制作、カスタムシェーダー開発、既存ワールド改修まで対応。">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://vrchat-gimmick-dev.replit.app/">
+    <meta property="og:title" content="VRCraftStudio - VRChatワールドギミック開発サービス">
+    <meta property="og:description" content="UdonSharp（U#）× Shader開発で、あなたのアイデアを現実に。">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1518709268805-4e9042af2176?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=630">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://vrchat-gimmick-dev.replit.app/">
+    <meta property="twitter:title" content="VRCraftStudio - VRChatワールドギミック開発サービス">
+    <meta property="twitter:description" content="UdonSharp（U#）× Shader開発で、あなたのアイデアを現実に。">
+    <meta property="twitter:image" content="https://images.unsplash.com/photo-1518709268805-4e9042af2176?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=630">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Hiragino Sans', 'Yu Gothic', 'Meiryo', 'Takao', 'IPAexGothic', 'IPAPGothic', 'VL PGothic', 'Noto Sans CJK JP', sans-serif;
+            background: linear-gradient(135deg, #0f1729 0%, #2d1b69 50%, #0f172a 100%);
+            color: #f1f5f9;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(15, 23, 41, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(139, 92, 246, 0.2);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            background: rgba(15, 23, 41, 0.95);
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #cbd5e1;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #a855f7;
+        }
+
+        .mobile-menu {
+            display: none;
+            color: white;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            padding-top: 5rem;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 20%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(6, 182, 212, 0.1) 0%, transparent 50%);
+        }
+
+        .hero-content {
+            text-align: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 8vw, 5rem);
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.1;
+        }
+
+        .hero p {
+            font-size: clamp(1.25rem, 3vw, 1.5rem);
+            margin-bottom: 2rem;
+            color: #cbd5e1;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        @media (min-width: 640px) {
+            .hero-buttons {
+                flex-direction: row;
+                justify-content: center;
+            }
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.875rem 2rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #8b5cf6, #a855f7);
+            color: white;
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.5);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #06b6d4;
+            border: 2px solid #06b6d4;
+        }
+
+        .btn-outline:hover {
+            background: #06b6d4;
+            color: #0f172a;
+            transform: scale(1.05);
+        }
+
+        /* Sections */
+        .section {
+            padding: 5rem 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: clamp(2.5rem, 6vw, 3.5rem);
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.25rem;
+            color: #cbd5e1;
+            margin-bottom: 4rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Cards */
+        .card-grid {
+            display: grid;
+            gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+
+        .card {
+            background: linear-gradient(135deg, rgba(51, 65, 85, 0.3), rgba(139, 92, 246, 0.1));
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 1rem;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(168, 85, 247, 0.5);
+            box-shadow: 0 20px 40px rgba(139, 92, 246, 0.2);
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: #8b5cf6;
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .card p {
+            color: #cbd5e1;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-features {
+            list-style: none;
+        }
+
+        .card-features li {
+            color: #94a3b8;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-features li::before {
+            content: '✓';
+            color: #10b981;
+            font-weight: bold;
+        }
+
+        /* Target Section */
+        .target-grid {
+            display: grid;
+            gap: 3rem;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .target-item {
+            text-align: center;
+        }
+
+        .target-icon {
+            width: 5rem;
+            height: 5rem;
+            margin: 0 auto 1.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            background: linear-gradient(135deg, #8b5cf6, #a855f7);
+            transition: transform 0.3s ease;
+        }
+
+        .target-item:hover .target-icon {
+            transform: scale(1.1) rotate(10deg);
+        }
+
+        .target-item h3 {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .target-item .highlight {
+            color: #fbbf24;
+        }
+
+        /* Portfolio */
+        .portfolio-grid {
+            display: grid;
+            gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        }
+
+        .portfolio-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 1rem;
+            background: linear-gradient(135deg, rgba(51, 65, 85, 0.3), rgba(139, 92, 246, 0.1));
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .portfolio-item:hover {
+            transform: translateY(-5px);
+            border-color: rgba(168, 85, 247, 0.5);
+        }
+
+        .portfolio-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .portfolio-item:hover .portfolio-image {
+            transform: scale(1.1);
+        }
+
+        .portfolio-content {
+            padding: 1.5rem;
+        }
+
+        .portfolio-tech {
+            color: #94a3b8;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Pricing */
+        .pricing-card {
+            background: linear-gradient(135deg, rgba(51, 65, 85, 0.3), rgba(139, 92, 246, 0.1));
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 1rem;
+            padding: 3rem;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .pricing-icon {
+            font-size: 4rem;
+            color: #10b981;
+            margin-bottom: 1.5rem;
+        }
+
+        .service-types {
+            display: grid;
+            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            margin: 2rem 0;
+        }
+
+        .service-type {
+            background: rgba(51, 65, 85, 0.3);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            border: 1px solid rgba(148, 163, 184, 0.3);
+        }
+
+        /* Contact */
+        .contact-grid {
+            display: grid;
+            gap: 3rem;
+            grid-template-columns: 1fr;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        @media (min-width: 768px) {
+            .contact-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .contact-form {
+            background: linear-gradient(135deg, rgba(51, 65, 85, 0.3), rgba(139, 92, 246, 0.1));
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 1rem;
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #cbd5e1;
+        }
+
+        .form-input,
+        .form-textarea {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(51, 65, 85, 0.5);
+            border: 1px solid rgba(148, 163, 184, 0.5);
+            border-radius: 0.5rem;
+            color: white;
+            font-family: inherit;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .social-links {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .social-link {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(51, 65, 85, 0.3);
+            border-radius: 0.75rem;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(148, 163, 184, 0.3);
+        }
+
+        .social-link:hover {
+            background: rgba(71, 85, 105, 0.5);
+            transform: translateX(5px);
+        }
+
+        .social-icon {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .twitter {
+            background: linear-gradient(135deg, #1da1f2, #1a91da);
+        }
+
+        .booth {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+
+        /* Footer */
+        .footer {
+            background: rgba(15, 23, 41, 0.8);
+            border-top: 1px solid rgba(139, 92, 246, 0.2);
+            padding: 3rem 0;
+            text-align: center;
+        }
+
+        .footer-social {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .footer-social a {
+            color: #94a3b8;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .footer-social a:hover {
+            color: #8b5cf6;
+            transform: scale(1.2) rotate(10deg);
+        }
+
+        /* Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            .hero h1 {
+                font-size: 3rem;
+            }
+
+            .section {
+                padding: 3rem 0;
+            }
+
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .target-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .portfolio-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .service-types {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Utility Classes */
+        .text-center { text-align: center; }
+        .text-white { color: white; }
+        .text-slate-300 { color: #cbd5e1; }
+        .text-slate-400 { color: #94a3b8; }
+        .mb-4 { margin-bottom: 1rem; }
+        .mb-6 { margin-bottom: 1.5rem; }
+        .mt-8 { margin-top: 2rem; }
+    </style>
 </head>
 <body>
-  <header>
-    <div class="container">
-      <div class="header-left">
-        <img class="logo" src="https://prog-8.com/images/html/advanced/main_logo.png">
-      </div>
-      <span class="fa fa-bars menu-icon"></span>
-      <div class="header-right">
-        <a href="#">レッスン</a>
-        <a href="#">新規登録</a>
-        <a href="#" class="login">ログイン</a>
-      </div>
-    </div>
-  </header>
-  <div class="top-wrapper">
-    <div class="container">
-      <h1>LEARN TO CODE.<br>LEARN TO BE CREATIVE.</h1>
-      <p>Progateはオンラインプログラミング学習サービスです。<br>初心者にもやさしいスライドとレッスンで、ウェブサービスを作りながらプログラミングを学んでいきましょう。</p>
-      <div class="btn-wrapper">
-        <a href="#" class="btn signup">新規登録はこちら</a>
-        <p>or</p>
-        <a href="#" class="btn facebook"><span class="fa fa-facebook"></span>Facebookで登録</a>
-        <a href="#" class="btn twitter"><span class="fa fa-twitter"></span>Twitterで登録</a>
-      </div>
-    </div>
-  </div>
-  <div class="lesson-wrapper">
-    <div class="container">
-      <div class="heading">
-        <h2>Learn Where to Get Started!</h2>
-      </div>
-      <div class="lessons">
-        <div class="lesson">
-          <div class="lesson-icon">
-            <img src="https://prog-8.com/images/html/advanced/html.png">
-            <p>HTML & CSS</p>
-          </div>
-          <p class="text-contents">ウェブページの作成に使用される言語です。HTMLとCSSを組み合わせることで、静的なページを作り上げることができます。</p>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <div class="nav-content">
+                <div class="logo">VRCraft Studio</div>
+                <ul class="nav-links">
+                    <li><a href="#services">サービス</a></li>
+                    <li><a href="#portfolio">実績</a></li>
+                    <li><a href="#pricing">料金</a></li>
+                    <li><a href="#contact">お問い合わせ</a></li>
+                </ul>
+                <button class="mobile-menu" onclick="toggleMobileMenu()">☰</button>
+            </div>
         </div>
-        <div class="lesson">
-          <div class="lesson-icon">
-            <img src="https://prog-8.com/images/html/advanced/jQuery.png">
-            <p>jQuery</p>
-          </div>
-          <p class="text-contents">素敵な動きを手軽に実装できるJavaScriptライブラリです。 アニメーション効果をつけたり、Ajax（エイジャックス）を使って外部ファイルを読み込んだりと色々なことができます。</p>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>自分だけの<br>VRChatワールド<br>ギミックを</h1>
+                <p>UdonSharp（U#）× Shader 開発で<br>あなたのアイデアを現実に</p>
+                <div class="hero-buttons">
+                    <a href="#contact" class="btn btn-primary">
+                        🚀 無料相談を始める
+                    </a>
+                    <a href="#portfolio" class="btn btn-outline">
+                        ▶ 実績を見る
+                    </a>
+                </div>
+            </div>
         </div>
-        <div class="lesson">
-          <div class="lesson-icon">
-            <img src="https://prog-8.com/images/html/advanced/ruby.png">
-            <p>Ruby</p>
-          </div>
-          <p class="text-contents">オープンソースの動的なプログラミング言語で、 シンプルさと高い生産性を備えています。大きなWebアプリケーションから小さな日用ツールまで、さまざまなソフトウェアを作ることができます。</p>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="section">
+        <div class="container">
+            <h2 class="section-title">🔧 できること</h2>
+            <p class="section-subtitle">最新技術を駆使して、あなたの想像を超える VRChat ワールドを実現します</p>
+            
+            <div class="card-grid">
+                <div class="card">
+                    <div class="card-icon">💻</div>
+                    <h3>UdonSharp（U#）開発</h3>
+                    <p>インタラクション、エフェクト、ゲーム要素、UI連携など、あらゆるワールドギミックを制作します。</p>
+                    <ul class="card-features">
+                        <li>プレイヤーインタラクション</li>
+                        <li>ゲームシステム</li>
+                        <li>UI/UX連携</li>
+                        <li>データ管理</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">🎨</div>
+                    <h3>HLSLカスタムシェーダー</h3>
+                    <p>透過・グロー・スキャンライン・特殊演出など、見た目にこだわった表現を提供します。</p>
+                    <ul class="card-features">
+                        <li>透過・グロー効果</li>
+                        <li>リアルタイム演出</li>
+                        <li>パーティクルシステム</li>
+                        <li>ライティング最適化</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">🔧</div>
+                    <h3>既存ワールド改修</h3>
+                    <p>既存ワールドの機能追加・改修・最適化にも対応可能です。</p>
+                    <ul class="card-features">
+                        <li>機能追加・拡張</li>
+                        <li>パフォーマンス最適化</li>
+                        <li>バグ修正</li>
+                        <li>アップデート対応</li>
+                    </ul>
+                </div>
+            </div>
         </div>
-        <div class="lesson">
-          <div class="lesson-icon">
-            <img src="https://prog-8.com/images/html/advanced/php.png">
-            <p>PHP</p>
-          </div>
-          <p class="text-contents">HTMLだけではページの内容を変えることはできません。PHPはHTMLにプログラムを埋め込み、それを可能にします。</p>
+    </section>
+
+    <!-- Target Section -->
+    <section class="section" style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1));">
+        <div class="container">
+            <h2 class="section-title">💡 こんな方におすすめ</h2>
+            
+            <div class="target-grid">
+                <div class="target-item">
+                    <div class="target-icon">💡</div>
+                    <h3>オリジナルギミック</h3>
+                    <p>ワールドにオリジナルギミックを入れて、他と差別化したい方</p>
+                </div>
+
+                <div class="target-item">
+                    <div class="target-icon">✨</div>
+                    <h3>見た目で差をつける</h3>
+                    <p>美しい演出や特殊効果で、印象的なワールドを作りたい方</p>
+                </div>
+
+                <div class="target-item">
+                    <div class="target-icon">❤️</div>
+                    <h3 class="highlight">技術がわからないけど<br>アイデアはある！</h3>
+                    <p>プログラミングは苦手だけど、実現したい企画がある方</p>
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="clear"></div>
-    </div>
-  </div>
-  <div class="message-wrapper">
-    <div class="container">
-      <div class="heading">
-        <h2>さぁ、あなたもProgateでプログラミングを学んでみませんか?</h2>
-        <h3>Let's learn to code, learn to be creative!</h3>
-      </div>
-      <span class="btn message">さっそく開発する</span>
-    </div>
-  </div>
-  <footer>
-    <div class="container">
-      <img src="https://prog-8.com/images/html/advanced/footer_logo.png">
+    </section>
+
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="section">
+        <div class="container">
+            <h2 class="section-title">🎨 制作実績</h2>
+            <p class="section-subtitle">これまでに制作した VRChat ワールドギミックの一部をご紹介</p>
+            
+            <div class="portfolio-grid">
+                <div class="portfolio-item">
+                    <img src="https://images.unsplash.com/photo-1518709268805-4e9042af2176?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600" alt="インタラクティブポータル" class="portfolio-image">
+                    <div class="portfolio-content">
+                        <div class="portfolio-tech">UdonSharp + カスタムシェーダー</div>
+                        <h3>インタラクティブポータル</h3>
+                        <p>プレイヤーの行動に反応する美しいポータルギミック。グロー効果とパーティクルで幻想的な演出を実現。</p>
+                    </div>
+                </div>
+
+                <div class="portfolio-item">
+                    <img src="https://images.unsplash.com/photo-1542831371-29b0f74f9713?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600" alt="ミニゲームシステム" class="portfolio-image">
+                    <div class="portfolio-content">
+                        <div class="portfolio-tech">UdonSharp</div>
+                        <h3>ミニゲームシステム</h3>
+                        <p>プレイヤー同士で楽しめるパズルゲーム。スコアシステムとランキング機能を実装。</p>
+                    </div>
+                </div>
+
+                <div class="portfolio-item">
+                    <img src="https://images.unsplash.com/photo-1593508512255-86ab42a8e620?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600" alt="音響連動エフェクト" class="portfolio-image">
+                    <div class="portfolio-content">
+                        <div class="portfolio-tech">UdonSharp + Shader</div>
+                        <h3>音響連動エフェクト</h3>
+                        <p>音楽に合わせて光る視覚効果。周波数解析によるリアルタイム演出。</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-8">
+                <a href="#" class="btn btn-primary">
+                    🔗 BOOTH で全実績を見る
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="section" style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1));">
+        <div class="container">
+            <h2 class="section-title">💰 料金</h2>
+            <p class="section-subtitle">お客様のご予算に合わせた柔軟な料金体系</p>
+            
+            <div class="pricing-card">
+                <div class="pricing-icon">❤️</div>
+                <h3 style="font-size: 2rem; margin-bottom: 1.5rem;">基本 安価に対応</h3>
+                <p style="font-size: 1.25rem; margin-bottom: 2rem;">ご予算に合わせた提案も可能なので、<br>まずはお気軽にご相談ください！</p>
+                
+                <div class="service-types">
+                    <div class="service-type">
+                        <div style="color: #8b5cf6; font-size: 2rem; margin-bottom: 0.75rem;">💻</div>
+                        <h4 style="margin-bottom: 0.5rem;">シンプルギミック</h4>
+                        <p style="color: #94a3b8; font-size: 0.875rem;">基本的なインタラクション<br>数時間〜1日程度</p>
+                    </div>
+
+                    <div class="service-type">
+                        <div style="color: #3b82f6; font-size: 2rem; margin-bottom: 0.75rem;">🎨</div>
+                        <h4 style="margin-bottom: 0.5rem;">カスタムシェーダー</h4>
+                        <p style="color: #94a3b8; font-size: 0.875rem;">特殊視覚効果<br>1〜3日程度</p>
+                    </div>
+
+                    <div class="service-type">
+                        <div style="color: #10b981; font-size: 2rem; margin-bottom: 0.75rem;">🚀</div>
+                        <h4 style="margin-bottom: 0.5rem;">複合システム</h4>
+                        <p style="color: #94a3b8; font-size: 0.875rem;">大規模ギミック<br>1週間〜</p>
+                    </div>
+                </div>
+
+                <div style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(6, 182, 212, 0.2)); border-radius: 0.75rem; padding: 1.5rem; margin: 2rem 0;">
+                    <h4 style="color: #fbbf24; margin-bottom: 0.75rem;">⭐ 特別割引</h4>
+                    <p>学生・個人クリエイター様には特別料金でご提供いたします</p>
+                </div>
+
+                <a href="#contact" class="btn" style="background: linear-gradient(135deg, #10b981, #059669); color: #0f172a; font-size: 1.125rem; padding: 1rem 2.5rem;">
+                    🧮 無料見積もりを依頼
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section">
+        <div class="container">
+            <h2 class="section-title">📬 お問い合わせ</h2>
+            <p class="section-subtitle">ご質問・ご相談はお気軽にどうぞ</p>
+            
+            <div class="contact-grid">
+                <!-- Contact Form -->
+                <div class="contact-form">
+                    <h3 style="display: flex; align-items: center; margin-bottom: 1.5rem;">
+                        <span style="margin-right: 0.75rem; color: #8b5cf6;">📧</span>
+                        お問い合わせフォーム
+                    </h3>
+                    
+                    <form id="contactForm">
+                        <div class="form-group">
+                            <label for="name" class="form-label">お名前 *</label>
+                            <input type="text" id="name" name="name" class="form-input" placeholder="山田太郎" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email" class="form-label">メールアドレス *</label>
+                            <input type="email" id="email" name="email" class="form-input" placeholder="example@email.com" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="message" class="form-label">プロジェクト内容 *</label>
+                            <textarea id="message" name="message" class="form-textarea" placeholder="実現したいギミックやアイデアをお聞かせください..." required></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">
+                            📝 送信する
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Contact Info -->
+                <div>
+                    <!-- Social Links -->
+                    <div style="background: linear-gradient(135deg, rgba(51, 65, 85, 0.3), rgba(59, 130, 246, 0.1)); backdrop-filter: blur(12px); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 1rem; padding: 2rem; margin-bottom: 2rem;">
+                        <h3 style="display: flex; align-items: center; margin-bottom: 1.5rem;">
+                            <span style="margin-right: 0.75rem; color: #3b82f6;">📱</span>
+                            SNS・販売サイト
+                        </h3>
+                        
+                        <div class="social-links">
+                            <a href="https://twitter.com/your_id" target="_blank" class="social-link">
+                                <div class="social-icon twitter">🐦</div>
+                                <div>
+                                    <div style="font-weight: 600;">X (旧Twitter)</div>
+                                    <div style="color: #94a3b8; font-size: 0.875rem;">@あなたのID</div>
+                                </div>
+                            </a>
+
+                            <a href="https://your_booth.booth.pm" target="_blank" class="social-link">
+                                <div class="social-icon booth">🏪</div>
+                                <div>
+                                    <div style="font-weight: 600;">BOOTH</div>
+                                    <div style="color: #94a3b8; font-size: 0.875rem;">販売・依頼受付中</div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Response Info -->
+                    <div style="background: linear-gradient(135deg, rgba(51, 65, 85, 0.3), rgba(16, 185, 129, 0.1)); backdrop-filter: blur(12px); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 1rem; padding: 2rem;">
+                        <h3 style="display: flex; align-items: center; margin-bottom: 1.5rem;">
+                            <span style="margin-right: 0.75rem; color: #10b981;">⏰</span>
+                            対応について
+                        </h3>
+                        
+                        <div style="space-y: 1rem;">
+                            <div style="display: flex; align-items: start; margin-bottom: 1rem;">
+                                <span style="color: #10b981; margin-right: 0.75rem;">✓</span>
+                                <div>
+                                    <div style="font-weight: 600; margin-bottom: 0.25rem;">レスポンス時間</div>
+                                    <div style="color: #94a3b8; font-size: 0.875rem;">24時間以内にご返信いたします</div>
+                                </div>
+                            </div>
+
+                            <div style="display: flex; align-items: start; margin-bottom: 1rem;">
+                                <span style="color: #10b981; margin-right: 0.75rem;">✓</span>
+                                <div>
+                                    <div style="font-weight: 600; margin-bottom: 0.25rem;">無料相談</div>
+                                    <div style="color: #94a3b8; font-size: 0.875rem;">プロジェクトの概算見積もりまで無料</div>
+                                </div>
+                            </div>
+
+                            <div style="display: flex; align-items: start;">
+                                <span style="color: #10b981; margin-right: 0.75rem;">✓</span>
+                                <div>
+                                    <div style="font-weight: 600; margin-bottom: 0.25rem;">アフターサポート</div>
+                                    <div style="color: #94a3b8; font-size: 0.875rem;">納品後1ヶ月間の修正対応込み</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="logo" style="font-size: 1.5rem; margin-bottom: 1rem;">VRCraft Studio</div>
+            <p style="color: #94a3b8; margin-bottom: 1.5rem;">あなたのアイデアを VRChat ワールドで実現します</p>
+            
+            <div class="footer-social">
+                <a href="https://twitter.com/your_id" target="_blank">🐦</a>
+                <a href="https://your_booth.booth.pm" target="_blank">🏪</a>
+                <a href="https://github.com/your_profile" target="_blank">💻</a>
+            </div>
+            
+            <p style="color: #64748b; font-size: 0.875rem;">© 2024 VRCraft Studio. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 100) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Contact form handling
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const data = {
+                name: formData.get('name'),
+                email: formData.get('email'),
+                message: formData.get('message')
+            };
+
+            // Here you would normally send the data to your server
+            console.log('Contact form submitted:', data);
+            
+            // Show success message
+            alert('お問い合わせありがとうございます！24時間以内にご返信いたします。');
+            
+            // Reset form
+            this.reset();
+        });
+
+        // Mobile menu toggle (if needed)
+        function toggleMobileMenu() {
+            // Add mobile menu functionality here if needed
+            console.log('Mobile menu toggled');
+        }
+
+        // Add some visual enhancements
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add intersection observer for animations
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            // Observe sections for animation
+            document.querySelectorAll('.section').forEach(section => {
+                section.style.opacity = '0';
+                section.style.transform = 'translateY(30px)';
+                section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>"https://prog-8.com/images/html/advanced/footer_logo.png">
       <p>Learn to Code, Learn to be Creative.</p>
     </div>
   </footer>
